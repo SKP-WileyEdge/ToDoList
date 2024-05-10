@@ -12,10 +12,19 @@ pipeline {
             steps {
                 // Step 2: Change working directory
                 dir('ToDoList') {
-                    // Step 3: Copy files to deployment directory
-                    sh 'cp -r * /var/www/html'
+                    // Step 3: Check if deployment directory exists
+                    sh 'test -d /var/www/html || mkdir -p /var/www/html'
 
-                    // Step 4: Check for errors
+                    // Step 4: Synchronize files with deployment directory
+                    sh 'rsync -avz --delete . /var/www/html'
+
+                    // Step 5: Restart web server
+                    sh 'sudo systemctl restart httpd'
+
+                    // Step 6: Clean up working directory
+                    sh 'rm -rf *'
+
+                    // Step 7: Check for errors
                     catchError(buildResult: 'UNSTABLE', message: 'Failed to deploy web application') {
                         sh 'echo "Deployment successful"'
                     }
