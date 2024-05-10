@@ -15,8 +15,6 @@ pipeline {
 
         stage('Deploy Web Application') {
             steps {
-                // Step 2: Change working directory
-                dir('ToDoList') {
                     // Step 3: Check if deployment directory exists
                     sh 'test -d /var/www/html || mkdir -p /var/www/html'
 
@@ -43,7 +41,6 @@ pipeline {
                     catchError(buildResult: 'UNSTABLE', message: 'Failed to deploy web application') {
                         sh 'echo "Deployment successful"'
                     }
-                }
             }
         }
     }
