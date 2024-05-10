@@ -1,5 +1,12 @@
 pipeline {
     agent any
+    triggers {
+        // Configure Jenkins to listen for incoming webhook events
+        webhook('GitHub') {
+            // Trigger the pipeline when a push event is received
+            triggerOnPush(true)
+        }
+    }
 
     stages {
         stage('Clone Repository') {
