@@ -19,7 +19,7 @@ pipeline {
                     sh 'rsync -avz --delete . /var/www/html'
 
                     // Step 5: Restart web server
-                    sh 'sudo systemctl restart httpd'
+                    sh 'systemctl --quiet is-active httpd || { systemctl start httpd; sleep 5; }'
 
                     // Step 6: Clean up working directory
                     sh 'rm -rf *'
