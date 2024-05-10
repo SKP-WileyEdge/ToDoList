@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     stages {
         stage('Clone Repository') {
             steps {
@@ -16,10 +17,10 @@ pipeline {
                     sh 'test -d /var/www/html || mkdir -p /var/www/html'
 
                     // Step 4: Synchronize files with deployment directory
-                    sh 'rsync -avz --delete . /var/www/html'
+                    sh 'sudo rsync -avz --delete . /var/www/html'
 
                     // Step 5: Restart web server
-                    sh 'systemctl --quiet is-active httpd || { systemctl start httpd; sleep 5; }'
+                    sh 'systemctl --quiet is-active httpd || { sudo systemctl start httpd; sleep 5; }'
 
                     // Step 6: Clean up working directory
                     sh 'rm -rf *'
@@ -33,4 +34,3 @@ pipeline {
         }
     }
 }
-
