@@ -17,15 +17,25 @@ pipeline {
                     sh 'test -d /var/www/html || mkdir -p /var/www/html'
 
                     // Step 4: Synchronize files with deployment directory
-                    sh 'sudo rsync -avz --delete . /var/www/html'
+                    script {
+                        try {
+                            sh 'sudo rsync -avz --delete . /var/www/html'
+                        } catch (Exception e) {
+                            echo "Failed to sync files: ${e.message}"
+                        }
+                    }
 
-                    // Step 5: Restart web server
+                    // Step 5: Print contents of workspace and deployment directory
+                    sh 'ls -l'
+                    sh 'ls -l /var/www/html'
+
+                    // Step 6: Restart web server
                     sh 'systemctl --quiet is-active httpd || { sudo systemctl start httpd; sleep 5; }'
 
-                    // Step 6: Clean up working directory
+                    // Step 7: Clean up working directory
                     sh 'rm -rf *'
 
-                    // Step 7: Check for errors
+                    // Step 8: Check for errors
                     catchError(buildResult: 'UNSTABLE', message: 'Failed to deploy web application') {
                         sh 'echo "Deployment successful"'
                     }
