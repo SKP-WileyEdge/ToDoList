@@ -1,11 +1,8 @@
 pipeline {
     agent any
     triggers {
-        // Configure Jenkins to listen for incoming webhook events
-        webhook('GitHub') {
-            // Trigger the pipeline when a push event is received
-            triggerOnPush(true)
-        }
+        // Define triggers outside of the pipeline block
+        githubPush() // Trigger the pipeline on GitHub push events
     }
 
     stages {
